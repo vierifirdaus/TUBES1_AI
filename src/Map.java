@@ -26,11 +26,16 @@ public class Map {
     public void addPosition(int row,int column,String player){
         map[row][column]=player;
         for(int i=row-1;i<=row+1;i++){
-            for(int j=column-1;j<=column+1;j++){
-                if(i>=0 && i<8 && j>=0 && j<8){
-                    if(!map[i][j].isEmpty() && !map[i][j].equals(player)){
-                        map[i][j]=player;
-                    }
+            if(i>=0 && i<8 ){
+                if(!map[i][column].isEmpty() && !map[i][column].equals(player)){
+                    map[i][column]=player;
+                }
+            }
+        }
+        for(int j=column-1;j<=column+1;j++){
+            if(j>=0 && j<8){
+                if(!map[row][j].isEmpty() && !map[row][j].equals(player)){
+                    map[row][j]=player;
                 }
             }
         }
