@@ -11,10 +11,18 @@ public class Bot {
         map=new Map(buttons);
     }
 
-    public int[] move(Button[][] buttons) {
+    public int[] move(Button[][] buttons, String type,Integer depth) {
         map = new Map(buttons);
-        Pair<Integer,Integer> res = minimax(map,10,-1000,1000,true).getValue();
-        return new int[]{res.getKey(), res.getValue()};
+        if(type.equals("minimax")){
+            Pair<Integer,Integer> res = minimax(map,depth>5 ?5 : depth,-1000,1000,true).getValue();
+
+            return new int[]{res.getKey(), res.getValue()};
+        }
+        else if(type.equals("localSearch")){
+            return new int[]{localSearch(buttons).getKey(),localSearch(buttons).getValue()};
+        }
+        return null;
+
     }
 
     private Pair<Integer, Integer>[] getValidLocations(Map map) {
@@ -72,19 +80,21 @@ public class Bot {
     private Pair<Integer,Pair<Integer,Integer>> minimax(Map map,int depth, int alpha, int beta, boolean turn){
         Pair<Integer,Integer>[] validLocation=getValidLocations(map);
 
-        Pair<Integer,Integer> locationNow;
+
         int alphaNow=alpha;
         int betaNow=beta;
+
         if(depth==0){
             return new Pair<>(getScore(map),null);
         }
-        int score;
-        if(turn){
-            locationNow=validLocation[0];
-            score=-1000;
 
-            for(int i=1;i<validLocation.length;i++){
-                Map mapCopy = new Map(this.map);
+        Pair<Integer,Integer> locationNow=validLocation[0];
+        int score;
+        
+        if(turn){
+            score=-1000;
+            for(int i=0;i<validLocation.length;i++){
+                Map mapCopy = new Map(map);
                 mapCopy.addPosition(validLocation[i].getKey(),validLocation[i].getValue(),"O");
                 int newScore = minimax(mapCopy,depth-1,alphaNow,betaNow,false).getKey();
                 if(newScore>score){
@@ -102,9 +112,8 @@ public class Bot {
             return new Pair(score,locationNow);
         }else{
             score=1000;
-            locationNow=validLocation[0];
-            for(int i=1;i<validLocation.length;i++){
-                Map mapCopy = new Map(this.map);
+            for(int i=0;i<validLocation.length;i++){
+                Map mapCopy = new Map(map);
                 mapCopy.addPosition(validLocation[i].getKey(),validLocation[i].getValue(),"X");
                 int newScore = minimax(mapCopy,depth-1,alphaNow,betaNow,true).getKey();
                 if(newScore<score){
@@ -122,5 +131,24 @@ public class Bot {
             return new Pair(score,locationNow);
         }
 
+    }
+    private Pair<Integer,Integer> localSearch(Button[][] buttons){
+        Pair<Integer,Integer> location = null;
+        int score=-10000;
+        for(int row=0;row<8;row++){
+            for(int column=0;column<8;column++){
+                if(buttons[row][column].getText().isEmpty()){
+
+                    Map mapCopy = new Map(buttons);
+                    mapCopy.addPosition(row,column,"O");
+                    if(score<getScore(mapCopy)){
+                        score=getScore(mapCopy);
+                        location=new Pair<>(row,column);
+                    }
+                }
+
+            }
+        }
+        return  location;
     }
 }

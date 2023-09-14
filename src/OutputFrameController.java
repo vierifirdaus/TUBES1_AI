@@ -197,6 +197,7 @@ public class OutputFrameController {
                 }
 
                 // Bot's turn
+
                 this.moveBot();
             }
             else {
@@ -353,7 +354,7 @@ public class OutputFrameController {
     }
 
     private void moveBot() {
-        int[] botMove = this.bot.move(buttons);
+        int[] botMove = this.bot.move(buttons,"minimax",isBotFirst ? roundsLeft*2 : roundsLeft*2-1);
         int i = botMove[0];
         int j = botMove[1];
 
