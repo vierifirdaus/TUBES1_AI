@@ -78,6 +78,7 @@ public class OutputFrameController {
 
         // Start bot
         this.bot = new Bot(buttons);
+
         this.playerXTurn = !isBotFirst;
         if (this.isBotFirst) {
             this.moveBot();
@@ -354,9 +355,23 @@ public class OutputFrameController {
     }
 
     private void moveBot() {
-        int[] botMove = this.bot.move(buttons,"minimax",isBotFirst ? roundsLeft*2 : roundsLeft*2-1);
-        int i = botMove[0];
-        int j = botMove[1];
+//        int[] botMove = this.bot.move(buttons,"minimax",isBotFirst ? roundsLeft*2 : roundsLeft*2-1);
+//        int i = botMove[0];
+//        int j = botMove[1];
+        int countButton;
+        countButton=0;
+        for(int row=0;row<8;row++){
+            for(int column=0;column<8;column++){
+                if(!buttons[row][column].getText().isEmpty()){
+                    countButton++;
+                }
+            }
+        }
+        GeneticAlgorithm ga = new GeneticAlgorithm(100, 64-countButton, 100, 0.2, buttons, "X", "O");
+        int botMove = ga.execute();
+        int i = botMove / 8;
+        int j = botMove % 8;
+
 
         if (!this.buttons[i][j].getText().equals("")) {
             new Alert(Alert.AlertType.ERROR, "Bot Invalid Coordinates. Exiting.").showAndWait();

@@ -3,6 +3,14 @@ import javafx.scene.control.Button;
 public class Map {
     private String[][] map= new String[8][8];
 
+    public Map(){
+        for(int row=0;row<8;row++){
+            for(int column=0;column<8;column++){
+                map[row][column]="";
+            }
+        }
+    }
+
     public Map(Button[][] buttons){
         for(int row=0;row<8;row++){
             for(int column=0;column<8;column++){
@@ -39,6 +47,20 @@ public class Map {
                 }
             }
         }
+    }
+
+    public int getScore(String firstPlayer,String secondPlayer){
+        int score=64;
+        for(int row=0;row<8;row++){
+            for(int column=0;column<8;column++){
+                if(map[row][column].equals(firstPlayer)){
+                    score++;
+                }else if(map[row][column].equals(secondPlayer)){
+                    score--;
+                }
+            }
+        }
+        return score;
     }
 
 }
