@@ -55,9 +55,17 @@ public class GeneticAlgorithm {
             generation++;
             if(generation==MAX_GENERATIONS){
                 for(int i=0;i<POPULATION_SIZE;i++){
-                    if(fitnessScores[i]>fitnessMax){
-                        fitnessMax=fitnessScores[i];
-                        idxMax=i;
+                    if(CHROMOSOME_LENGTH%2==0){
+                        if(fitnessScores[i]<fitnessMax){
+                            fitnessMax=fitnessScores[i];
+                            idxMax=i;
+                        }
+                    }
+                    else{
+                        if(fitnessScores[i]>fitnessMax){
+                            fitnessMax=fitnessScores[i];
+                            idxMax=i;
+                        }
                     }
                 }
 

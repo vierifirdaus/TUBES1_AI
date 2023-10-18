@@ -15,6 +15,9 @@ import javafx.scene.layout.RowConstraints;
 
 import java.io.IOException;
 
+
+import javafx.util.Pair;
+
 /**
  * The OutputFrameController class.  It controls button input from the users when
  * playing the game.
@@ -50,12 +53,13 @@ public class OutputFrameController {
     private int playerOScore;
     private int roundsLeft;
     private boolean isBotFirst;
-    private Bot bot;
 
 
     private static final int ROW = 8;
     private static final int COL = 8;
     private Button[][] buttons = new Button[ROW][COL];
+
+    private Bot bot;
 
 
     /**
@@ -76,8 +80,8 @@ public class OutputFrameController {
         this.roundsLeft = Integer.parseInt(rounds);
         this.isBotFirst = isBotFirst;
 
-        // Start bot
-        this.bot = new Bot(buttons);
+        this.bot = new Bot(this.buttons);
+
 
         this.playerXTurn = !isBotFirst;
         if (this.isBotFirst) {
@@ -355,22 +359,40 @@ public class OutputFrameController {
     }
 
     private void moveBot() {
-//        int[] botMove = this.bot.move(buttons,"minimax",isBotFirst ? roundsLeft*2 : roundsLeft*2-1);
-//        int i = botMove[0];
-//        int j = botMove[1];
-        int countButton;
-        countButton=0;
-        for(int row=0;row<8;row++){
-            for(int column=0;column<8;column++){
-                if(!buttons[row][column].getText().isEmpty()){
-                    countButton++;
+        String botType;
+        botType="genetic";
+        int i,j;
+        if(botType.equals("genetic")){
+            int countButton;
+            countButton=0;
+            for(int row=0;row<8;row++){
+                for(int column=0;column<8;column++){
+                    if(!buttons[row][column].getText().isEmpty()){
+                        countButton++;
+                    }
                 }
             }
+            GeneticAlgorithm ga;
+            if(isBotFirst){
+                ga = new GeneticAlgorithm(100, 64-countButton, 100, 0.2, buttons, "X", "O");
+            }
+            else{
+                ga = new GeneticAlgorithm(100, 64-countButton, 100, 0.2, buttons, "O", "X");
+            }
+            int botMove = ga.execute();
+            i = botMove / 8;
+            j = botMove % 8;
         }
-        GeneticAlgorithm ga = new GeneticAlgorithm(100, 64-countButton, 100, 0.2, buttons, "X", "O");
-        int botMove = ga.execute();
-        int i = botMove / 8;
-        int j = botMove % 8;
+        else if(botType.equals("minimax")){
+            int[] botMove = bot.move(buttons,"minimax",isBotFirst ? roundsLeft*2 : roundsLeft*2-1);
+            i = botMove[0];
+            j = botMove[1];
+        }
+        else{
+            int[] botMove = bot.move(buttons,"localSearch",isBotFirst ? roundsLeft*2 : roundsLeft*2-1);
+            i = botMove[0];
+            j = botMove[1];
+        }
 
 
         if (!this.buttons[i][j].getText().equals("")) {
